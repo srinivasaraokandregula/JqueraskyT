@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- View port for Responsive web pages -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Purchasing Power 2013</title>
+    <!-- Linking the Style sheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Linking the JQuery File -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <!--<script src="js/jquery-1.12.3.js"></script>-->
+    <div class="container">
+      <div class="row">
+        <center><h1> Purchasing Power of G20 countries for the year 2013 </h1><center>
+      </div>
+    </div>
+    <hr />
+    <br />
+    <!-- For Creating the table -->
+    <div class="container">
+      <div class="row">
+      	<div class="col-sm-6">
+      			<table class="table" id="htmlTable">
+      				<tr>
+      						<th>S.No</th>
+      						<th>Country</th>
+      						<th>Purchasing Power</th>
+      						<th>Delete</th>
+     					</tr>
+      		  </table>
+            <script>
+                var i=1;
+                var purchasingPowerObj=[{"country": "Argentina","PurchasingPower2013": "931.3"},
+                                        {"country": "Australia","PurchasingPower2013": "1053.23"},
+                                        {"country": "Brazil","PurchasingPower2013": "3218.2"},
+                                        {"country": "Canada","PurchasingPower2013": "1532.79"},
+                                        {"country": "China","PurchasingPower2013": "16585"},
+                                        {"country": "France","PurchasingPower2013": "25544.72"},
+                                        {"country": "Germany","PurchasingPower2013": "3630.15"},
+                                        {"country": "India","PurchasingPower2013": "6796.13"},
+                                        {"country": "Indonesia","PurchasingPower2013": "2516.06"},
+                                        {"country": "Italy","PurchasingPower2013": "2109.84"},
+                                        {"country": "Japan","PurchasingPower2013": "4694.85"},
+                                        {"country": "Mexico","PurchasingPower2013": "2069.84"},
+                                        {"country": "Russia","PurchasingPower2013": "3498.04"},
+                                        {"country": "Saudi Arabia","PurchasingPower2013": "1530.54"},
+                                        {"country": "South Africa","PurchasingPower2013": "685.22"},
+                                        {"country": "Republic of Korea","PurchasingPower2013": "1698.88"},
+                                        {"country": "Turkey","PurchasingPower2013": "1448.17"},
+                                        {"country": "United Kingdom","PurchasingPower2013": "2454.23"},
+                                        {"country": "USA","PurchasingPower2013": "16663.15"}];
+
+                              purchasingPowerObj.sort(function(a,b)
+                           {
+                             return b.PurchasingPower2013- a.PurchasingPower2013;
+                           });
+
+                    for (var i = 0; i < purchasingPowerObj.length; i++)
+                {
+                    tableRow(purchasingPowerObj[i]);
+                }
+                // For Drawing the Graph
+                $(document).ready(function()
+                {
+                     purchasingPowerGraph(purchasingPowerObj);
+                });
+
+              // For Drawing the Table
+                function tableRow(rowData)
+                {
+                    var row = $("<tr>")
+                     //Appending each row
+                    row.append($("<td id='sno'>" + (i+1) + "</td>"));
+                    row.append($("<td>" + rowData.country + "</td>"));
+                    row.append($("<td>" + rowData.PurchasingPower2013 + "</td>"));
+                    row.append($("<td><button id='remove'style='height=200px;width=200px'>Delete</button></td></tr>"));
+                    $("#htmlTable").append(row);
+                }
+            //   $(document).on('click', 'button.remove', function ()
+               $(document).ready(function(){
+                     $("button").click(function(){
+                    var deleteButton=confirm("Are you sure to delete?");if(deleteButton==true)
+                  {
+                        var dis=$(this).closest('tr').children('td#sno').text();
+                        purchasingPowerObj[parseInt(dis)-1]="";
+                        purchasingPowerGraph(purchasingPowerObj);
+                        $(this).closest('tr').remove();
+                        return false;
+                    }
+                });
+                });
+            </script>
+          </div>
+          <!-- For Drawing the Graph -->
+		      <div class="col-sm-6" id="second">
+            <!-- Including the D3.js -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+          <script>
+            // set the dimensions of SVG
+            function purchasingPowerGraph(purchasingPowerObj)
+              {
+                                  // Emptying the Div each time
+                    $('div#second').empty();
+                    // Setting the margin for SVG
+                    var margin = {top: 20, right: 20, bottom: 70, left: 80};
+                    var width = 500 - margin.left - margin.right;
+                    var height = 500 - margin.top - margin.bottom;
+                    // set the ranges of X and Y Axis
+                    var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+                    var y = d3.scale.linear().range([height, 0]);
+                    // Define the axis
+                    var xAxis = d3.svg.axis()
+                          .scale(x)
+                          .orient("bottom")
+                    var yAxis = d3.svg.axis()
+                          .scale(y)
+                          .orient("left");
+                    // Add the SVG element
+                    var svg = d3.select("div#second").append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform",
+                              "translate(" + margin.left + "," + margin.top + ")");
+                    // Reading the myObj Data
+                    purchasingPowerObj.forEach(function(d)
+                    {
+                          d.country = d.country;
+                            d.PurchasingPower2013 = + parseInt(d.PurchasingPower2013);
+                    });
+                    // scale the range of the data
+                    x.domain(purchasingPowerObj.map(function(d) { return d.country; }));
+                    y.domain([0, d3.max(purchasingPowerObj, function(d) { return d.PurchasingPower2013; })]);
+                    // X-Axis
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis)
+                        .selectAll("text")
+                        .style("text-anchor", "end")
+                        .attr("dx", "-.8em")
+                        .attr("dy", "-.55em")
+                        .attr("transform", "rotate(-30)" );
+                    // Y-Axis
+                    svg.append("g")
+                          .attr("class", "y axis")
+                          .call(yAxis)
+                          .append("text")
+                          .attr("transform", "rotate(-90)")
+                          .attr("y", 5)
+                          .attr("dy", ".71em")
+                          .style("text-anchor", "end");
+                    // Add bar chart
+                    svg.selectAll("rect")
+                      .data(purchasingPowerObj)
+                        .enter().append("rect")
+                        .attr("class", "rect")
+                        .attr("x", function(d) { return x(d.country); })
+                        .attr("width", x.rangeBand())
+                        .attr("y", function(d) { return y(parseInt(d.PurchasingPower2013)); })
+                        .attr("height", function(d) { return height - y(parseInt(d.PurchasingPower2013)); });
+                }
+            </script>
+		      </div>
+	      </div>
+    </div>
+    <!-- Link for the Second Web Page -->
+    <!--<div class="container">
+        <div class="row">
+              <center><a href="table2.html" id="next"> &nbsp; Next &nbsp;</a></center>
+        </div>
+    </div>-->
+    <!-- Linking the Bootstrap js File -->
+    <!--<script src="js/bootstrap.min.js"></script>-->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <div class="container">
+        <div class="row">
+              <center><a href="jqueryGDP2013.html"><h2> GDP 2013 </h2></a></center>
+              <center><a href="jqueryPopulation2013.html"> <h2> Population 2013 </h2></a></center>
+        </div>
+    </div>
+      </body>
+</html>

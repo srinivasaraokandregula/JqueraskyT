@@ -1,0 +1,29 @@
+rect
+{
+  fill:#cc99ff ;
+}
+text{
+  height:100px;
+}
+.axis {
+  font: 10px sans-serif;
+}
+.axis path,.axis line {
+  fill: none;
+  stroke: #000000;
+  shape-rendering: crispEdges;
+}
+a:hover{
+  cursor:pointer;
+}
+a#next
+{
+  color: blue;
+ font-weight: bold;
+  font-size: 18px;
+}
+a#next:hover{
+  text-decoration: none;
+  color:red;
+}
+
